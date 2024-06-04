@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from espei.analysis import truncate_arrays
 from statistics import harmonic_mean
