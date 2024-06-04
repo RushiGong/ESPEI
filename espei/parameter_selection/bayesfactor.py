@@ -39,7 +39,7 @@ def harmonic_mean_estimator(trace_file, lnprob_file, nburn, log=False):
         evidence=Decimal(harmonic_mean(samples_list))
         return evidence
 
-def bayes_factor_selection(evidence_1, evidence_2, log=False):
+def bayes_factor_selection(evidence_1, evidence_2, log=False, use_log10_K=False):
     """
     Return Bayes factor and strength of evidence
 
@@ -62,6 +62,9 @@ def bayes_factor_selection(evidence_1, evidence_2, log=False):
             print('Please use Decimal type of evidence value for calculations')
     if log == True:
         K=evidence_1.exp()/evidence_2.exp()
+    else:
+        K=evidence_1/evidence_2
+    if use_log10_K == True:
         log10_K=math.log10(K)
         if log10_K < 0:
             print('Bayes factor is', log10_K)
@@ -83,7 +86,6 @@ def bayes_factor_selection(evidence_1, evidence_2, log=False):
             print('Model 1 is favored by data')
             print('Strength of evidence: Decisive')
     else:
-        K=evidence_1/evidence_2
         if K < 1:
             print('Bayes factor is', K)
             print('Model 2 is favored by data')
