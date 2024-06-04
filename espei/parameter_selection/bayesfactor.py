@@ -21,7 +21,7 @@ def harmonic_mean_estimator(trace_file, lnprob_file, nburn, log=False):
     -------
     evidence value: decimal
         the default is not using log value, if 'log=True', return ln(evidence) value
-        
+
     """
     trace = np.load(trace_file)
     lnprob = np.load(lnprob_file)
@@ -56,6 +56,9 @@ def bayes_factor_selection(evidence_1, evidence_2, log=False):
     Bayes factor and strength of evidence
 
     """
+    for i in evidence_1, evidence_2:
+        if type(i) is not Decimal:
+            print('Please use Decimal type of evidence value for calculations')
     if log == True:
         K=evidence_1.exp()/evidence_2.exp()
         log10_K=math.log10(K)
