@@ -5,6 +5,24 @@ from decimal import *
 import math
 
 def harmonic_mean_estimator(trace_file, lnprob_file, nburn, log=False):
+    """
+    Return evidence/marginal likelihood from MCMC using the harmonic mean estimation method
+
+    Parameters
+    ----------
+    trace_file : string
+        file name of trace file from MCMC
+    lnprob_file : string
+        file name of lnprob file from MCMC
+    nburn : int
+        number of burn-in steps, number of steps that will be removed from estimating evidence
+
+    Returns
+    -------
+    evidence value: decimal
+        the default is not using log value, if 'log=True', return ln(evidence) value
+        
+    """
     trace = np.load(trace_file)
     lnprob = np.load(lnprob_file)
     trace, lnprob = truncate_arrays(trace, lnprob)
@@ -14,13 +32,30 @@ def harmonic_mean_estimator(trace_file, lnprob_file, nburn, log=False):
         for j in samples[i]:
             samples_list.append(Decimal(j).exp())
     if log == True:
-        evidence=Decimal(harmonic_mean(tt)).ln()
+        evidence=Decimal(harmonic_mean(samples_list)).ln()
         return evidence
     else:
-        evidence=Decimal(harmonic_mean(tt))
+        evidence=Decimal(harmonic_mean(samples_list))
         return evidence
 
 def bayes_factor_selection(evidence_1, evidence_2, log=False):
+    """
+    Return Bayes factor and strength of evidence
+
+    Parameters
+    ----------
+    evidence_1 : decimal
+        evidence of model 1
+    evidence_2 : decimal
+        evidence of model 2
+    log : default is False
+        set 'log=True' if use ln(evidence) as input for calculating Bayes factor
+
+    Returns
+    -------
+    Bayes factor and strength of evidence
+
+    """
     if log == True:
         K=evidence_1.exp()/evidence_2.exp()
         log10_K=math.log10(K)
@@ -64,6 +99,3 @@ def bayes_factor_selection(evidence_1, evidence_2, log=False):
             print('Bayes factor is', K)
             print('Model 1 is favored by data')
             print('Strength of evidence: Decisive')
-
-
-
